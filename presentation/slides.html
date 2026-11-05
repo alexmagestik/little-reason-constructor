@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Маленький повод — презентация проекта</title>
+  <style>
+    :root {
+      --cream: #FAF5EF;
+      --white: #FFFDFA;
+      --terracotta: #C85A3C;
+      --terracotta-ink: #A8462C;
+      --terracotta-soft: #F6E5DD;
+      --graphite: #2B2B2B;
+      --gray: #666666;
+      --line: #E5DDD2;
+      --font: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: #D9CFC3;
+      color: var(--graphite);
+      font-family: var(--font);
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+      padding: 32px;
+    }
+
+    .slide {
+      position: relative;
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      padding: 44px 64px 36px;
+      background: var(--cream);
+      box-shadow: 0 24px 60px rgba(43, 43, 43, 0.16);
+    }
+
+    .header {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--terracotta);
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-copy strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .brand-copy span {
+      display: block;
+      margin-top: 3px;
+      color: var(--gray);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .slide-meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--gray);
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .slide-number {
+      color: var(--terracotta-ink);
+      font-weight: 700;
+    }
+
+    .footer {
+      position: absolute;
+      right: 64px;
+      bottom: 24px;
+      left: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      color: var(--gray);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .footer strong {
+      color: var(--graphite);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      text-transform: none;
+    }
+
+    /* ---------- Slide 1 ---------- */
+
+    .slide-1-main {
+      position: absolute;
+      top: 152px;
+      right: 64px;
+      left: 64px;
+      display: flex;
+      align-items: center;
+      gap: 58px;
+    }
+
+    .hero-copy {
+      width: 398px;
+      flex: 0 0 398px;
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--terracotta-ink);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .hero-copy h1 {
+      margin: 0;
+      color: var(--graphite);
+      font-size: 58px;
+      font-weight: 700;
+      letter-spacing: -0.055em;
+      line-height: 0.98;
+    }
+
+    .hero-sub {
+      margin: 16px 0 0;
+      color: var(--gray);
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .thesis {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 36px;
+    }
+
+    .thesis-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      color: var(--graphite);
+      font-size: 17px;
+      line-height: 1.42;
+    }
+
+    .thesis-row.solution {
+      color: var(--terracotta-ink);
+    }
+
+    .thesis-mark {
+      width: 7px;
+      height: 7px;
+      margin-top: 8px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--terracotta);
+    }
+
+    .thesis-row div {
+      text-wrap: balance;
+    }
+
+    .thesis-label {
+      font-weight: 700;
+    }
+
+    .flow-zone {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 18px;
+    }
+
+    .flow-items {
+      display: grid;
+      grid-template-columns: repeat(3, 86px);
+      gap: 8px;
+    }
+
+    .mini-card {
+      display: flex;
+      width: 86px;
+      height: 108px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 9px 5px 7px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--white);
+      box-shadow: 0 8px 20px rgba(75, 47, 32, 0.045);
+    }
+
+    .mini-card svg {
+      display: block;
+      width: 42px;
+      height: 42px;
+    }
+
+    .mini-card span {
+      color: var(--gray);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .flow-box {
+      width: 126px;
+      height: 126px;
+      gap: 7px;
+      border-color: var(--terracotta);
+      background: var(--terracotta);
+      box-shadow: 0 14px 30px rgba(200, 90, 60, 0.2);
+    }
+
+    .flow-box svg {
+      width: 64px;
+      height: 64px;
+    }
+
+    .flow-box span {
+      color: rgba(255, 253, 250, 0.82);
+    }
+
+    .flow-receipt {
+      width: 96px;
+      height: 126px;
+    }
+
+    .flow-receipt svg {
+      width: 50px;
+      height: 58px;
+    }
+
+    .flow-arrow {
+      display: flex;
+      width: 42px;
+      flex: 0 0 42px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .flow-arrow svg {
+      display: block;
+      width: 42px;
+      height: 24px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 36px;
+    }
+
+    .metric {
+      display: flex;
+      height: 92px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
+      background: var(--terracotta);
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      box-shadow: 0 10px 24px rgba(200, 90, 60, 0.13);
+    }
+
+    /* ---------- Slide 2 ---------- */
+
+    .slide-2-title {
+      position: absolute;
+      top: 122px;
+      left: 64px;
+    }
+
+    .slide-2-title h2 {
+      margin: 0;
+      font-size: 42px;
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      line-height: 1.04;
+    }
+
+    .slide-2-title p {
+      margin: 9px 0 0;
+      color: var(--gray);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .results-layout {
+      position: absolute;
+      top: 226px;
+      right: 64px;
+      left: 64px;
+      display: flex;
+      align-items: flex-start;
+      gap: 32px;
+    }
+
+    .gallery {
+      display: grid;
+      width: 430px;
+      flex: 0 0 430px;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px 14px;
+    }
+
+    .gallery-item {
+      margin: 0;
+    }
+
+    .gallery-frame {
+      display: flex;
+      height: 142px;
+      align-items: center;
+      justify-content: center;
+      padding: 7px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--white);
+      box-shadow: 0 8px 20px rgba(75, 47, 32, 0.045);
+    }
+
+    .gallery-frame img {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+
+    .gallery-item figcaption {
+      margin-top: 6px;
+      color: var(--gray);
+      font-size: 8.5px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .calc-preview {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .calc-frame {
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--white);
+      box-shadow: 0 12px 28px rgba(75, 47, 32, 0.06);
+    }
+
+    .calc-frame img {
+      display: block;
+      width: 100%;
+      border-radius: 11px;
+    }
+
+    .calc-caption {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      color: var(--gray);
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .calc-caption strong {
+      color: var(--terracotta-ink);
+      font-weight: 700;
+    }
+
+    .result-cards {
+      position: absolute;
+      right: 64px;
+      bottom: 76px;
+      left: 64px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .result-card {
+      display: flex;
+      min-height: 78px;
+      align-items: center;
+      gap: 16px;
+      padding: 15px 20px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 253, 250, 0.72);
+    }
+
+    .result-icon {
+      display: grid;
+      width: 44px;
+      height: 44px;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--terracotta-soft);
+      color: var(--terracotta-ink);
+    }
+
+    .result-icon svg {
+      display: block;
+      width: 24px;
+      height: 24px;
+    }
+
+    .result-copy h3 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .result-copy p {
+      margin: 4px 0 0;
+      color: var(--gray);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .result-copy .exam {
+      color: var(--terracotta-ink);
+      font-weight: 700;
+    }
+
+    /* ---------- Slide 3 ---------- */
+
+    .slide-3-title {
+      position: absolute;
+      top: 122px;
+      left: 64px;
+    }
+
+    .slide-3-title h2 {
+      margin: 0;
+      font-size: 44px;
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      line-height: 1.04;
+    }
+
+    .slide-3-title p {
+      margin: 9px 0 0;
+      color: var(--gray);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .summary-grid {
+      position: absolute;
+      top: 226px;
+      right: 64px;
+      left: 64px;
+      display: grid;
+      grid-template-columns: 1.02fr 0.98fr;
+      gap: 24px;
+    }
+
+    .summary-card {
+      min-height: 344px;
+      padding: 30px 32px;
+      border-radius: 22px;
+    }
+
+    .limits-card {
+      border: 1px solid var(--line);
+      background: var(--white);
+      box-shadow: 0 10px 26px rgba(75, 47, 32, 0.045);
+    }
+
+    .next-card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(200, 90, 60, 0.18);
+      background: var(--terracotta-soft);
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+    }
+
+    .next-card .card-title {
+      color: var(--terracotta-ink);
+    }
+
+    .limits-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin: 26px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .limits-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      font-size: 17px;
+      line-height: 1.42;
+    }
+
+    .limits-list li::before {
+      width: 8px;
+      height: 8px;
+      margin-top: 8px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--terracotta);
+      content: "";
+    }
+
+    .next-arrow {
+      margin: 13px 0 17px;
+    }
+
+    .next-arrow svg {
+      display: block;
+      width: 100%;
+      height: 72px;
+    }
+
+    .next-text {
+      margin: 0;
+      color: var(--terracotta-ink);
+      font-size: 31px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.14;
+    }
+
+    .next-note {
+      margin: auto 0 0;
+      color: var(--gray);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    @media print {
+      @page {
+        size: 13.333333in 7.5in;
+        margin: 0;
+      }
+
+      html,
+      body {
+        width: 13.333333in;
+        height: 7.5in;
+        background: #FFFFFF;
+      }
+
+      body {
+        display: block;
+        padding: 0;
+      }
+
+      .slide {
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+        break-after: page;
+      }
+
+      .slide:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SLIDE 1 -->
+  <section class="slide slide-1">
+    <header class="header">
+      <div class="brand">
+        <span class="brand-mark">мп</span>
+        <span class="brand-copy">
+          <strong>Маленький повод</strong>
+          <span>мастерская подарков</span>
+        </span>
+      </div>
+      <div class="slide-meta">
+        <span><span class="slide-number">01</span> / 03</span>
+      </div>
+    </header>
+
+    <main class="slide-1-main">
+      <section class="hero-copy">
+        <p class="eyebrow">Кейс проекта</p>
+        <h1>Маленький повод</h1>
+        <p class="hero-sub">Конструктор подарочного набора</p>
+
+        <div class="thesis">
+          <div class="thesis-row">
+            <span class="thesis-mark"></span>
+            <div><span class="thesis-label">Проблема:</span> нет прозрачного инструмента сборки</div>
+          </div>
+          <div class="thesis-row solution">
+            <span class="thesis-mark"></span>
+            <div><span class="thesis-label">Решение:</span> визуалы + калькулятор</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="flow-zone" aria-label="Схема: предметы, коробка, смета">
+        <div class="flow">
+          <div class="flow-items">
+            <div class="mini-card">
+              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M32 10.5c3.3 3.4 5.6 6.1 5.6 9.3a5.6 5.6 0 0 1-11.2 0c0-3.2 2.3-5.9 5.6-9.3Z" fill="#FAF5EF" stroke="#C85A3C" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M32 25.5V30" stroke="#C85A3C" stroke-width="2" stroke-linecap="round"/>
+                <path d="M25.5 30h13v16.5a4.5 4.5 0 0 1-4.5 4.5h-4a4.5 4.5 0 0 1-4.5-4.5V30Z" fill="#FAF5EF" stroke="#C85A3C" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M25.5 34.5c0 2.2-.9 2.9-.9 5M38.5 35c0 1.8.8 2.4.8 4.1" stroke="#C85A3C" stroke-width="2" stroke-linecap="round" opacity=".6"/>
+              </svg>
+              <span>Свеча</span>
+            </div>
+            <div class="mini-card">
+              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="17" y="10.5" width="30" height="43" rx="4" fill="#FAF5EF" stroke="#C85A3C" stroke-width="2"/>
+                <path d="M24 10.5v43" stroke="#C85A3C" stroke-width="2"/>
+                <path d="M40.5 10.5v43" stroke="#C85A3C" stroke-width="2"/>
+                <path d="M30.5 10.5h7V26L34 23.2 30.5 26V10.5Z" fill="#FAF5EF" stroke="#C85A3C" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M24 18h4M24 23h4" stroke="#C85A3C" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+              </svg>
+              <span>Блокнот</span>
+            </div>
+            <div class="mini-card">
+              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="11" y="19" width="42" height="30" rx="2.5" fill="#FAF5EF" stroke="#C85A3C" stroke-width="2"/>
+                <path d="M32 19v30" stroke="#C85A3C" stroke-width="2" opacity=".55"/>
+                <path d="M20 41.5c3.2-5.5 6.6-9 11.5-12" stroke="#C85A3C" stroke-width="2" stroke-linecap="round"/>
+                <path d="M24.5 36.8c-1.9-.1-3.4-.8-4.6-2.1M27 33c-1.4-1-2.4-2.4-3-4M30.3 30c-.3-1.7 0-3.3 1-4.8M30 35.8c1.6-.3 2.9-1 3.9-2.2M27.5 39.1c1.9.1 3.5-.4 4.8-1.5" stroke="#C85A3C" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span>Открытка</span>
+            </div>
+          </div>
+
+          <div class="flow-arrow" aria-hidden="true">
+            <svg viewBox="0 0 44 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 12h36M30 4l9 8-9 8" stroke="#C85A3C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <div class="mini-card flow-box">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M10 35 32 26l22 9v13L32 57 10 48V35Z" fill="rgba(255,253,250,.12)" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M10 35l22 9 22-9M32 44v13" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M14 14 32 7l18 7-18 7-18-7Z" fill="rgba(255,253,250,.2)" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M14 14v2l18 7 18-7v-2" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            <span>Коробка</span>
+          </div>
+
+          <div class="flow-arrow" aria-hidden="true">
+            <svg viewBox="0 0 44 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 12h36M30 4l9 8-9 8" stroke="#C85A3C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <div class="mini-card flow-receipt">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M18 8h28v46l-5-3-5 3-5-3-5 3-5-3-3 3V8Z" fill="#FFFDFA" stroke="#C85A3C" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M24 20h16M24 28h16M24 36h10" stroke="#C85A3C" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+            </svg>
+            <span>Смета</span>
+          </div>
+        </div>
+
+        <div class="metrics">
+          <div class="metric">Прозрачность</div>
+          <div class="metric">Контроль</div>
+          <div class="metric">Смета</div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span><strong>Маленький повод</strong> · учебный проект</span>
+      <span>2026</span>
+    </footer>
+  </section>
+
+  <!-- SLIDE 2 -->
+  <section class="slide slide-2">
+    <header class="header">
+      <div class="brand">
+        <span class="brand-mark">мп</span>
+        <span class="brand-copy">
+          <strong>Маленький повод</strong>
+          <span>мастерская подарков</span>
+        </span>
+      </div>
+      <div class="slide-meta">
+        <span><span class="slide-number">02</span> / 03</span>
+      </div>
+    </header>
+
+    <div class="slide-2-title">
+      <h2>Результаты</h2>
+      <p>Визуальная система и рабочий калькулятор</p>
+    </div>
+
+    <main class="results-layout">
+      <div class="gallery" aria-label="Четыре визуальных макета">
+        <figure class="gallery-item">
+          <div class="gallery-frame"><img src="../images/cover.png" alt="Обложка 16:9"></div>
+          <figcaption>Обложка · 16:9</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <div class="gallery-frame"><img src="../images/ad-layout.png" alt="Рекламный макет 4:5"></div>
+          <figcaption>Рекламный макет · 4:5</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <div class="gallery-frame"><img src="../images/set-card.png" alt="Карточка набора 1:1"></div>
+          <figcaption>Карточка набора · 1:1</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <div class="gallery-frame"><img src="../images/presentation-frame.png" alt="Презентационный кадр 16:9"></div>
+          <figcaption>Презентационный кадр · 16:9</figcaption>
+        </figure>
+      </div>
+
+      <section class="calc-preview" aria-label="Скриншот интерфейса калькулятора">
+        <div class="calc-frame">
+          <img src="assets/app-items.png" alt="Интерфейс калькулятора: свеча, блокнот и открытка со счётчиками">
+        </div>
+        <div class="calc-caption">
+          <span><strong>HTML-калькулятор</strong> · интерфейс сборки</span>
+          <span>3 шага · проверка · смета</span>
+        </div>
+      </section>
+    </main>
+
+    <div class="result-cards">
+      <article class="result-card">
+        <span class="result-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
+            <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
+            <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
+            <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
+          </svg>
+        </span>
+        <div class="result-copy">
+          <h3>Визуальные материалы</h3>
+          <p>4 согласованных макета</p>
+        </div>
+      </article>
+
+      <article class="result-card">
+        <span class="result-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="4" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M3 8h18" stroke="currentColor" stroke-width="1.7"/>
+            <circle cx="6" cy="6" r=".7" fill="currentColor"/>
+            <circle cx="8.4" cy="6" r=".7" fill="currentColor"/>
+            <path d="M9.5 12.5 7.5 14l2 1.5M14.5 12.5 16.5 14l-2 1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <div class="result-copy">
+          <h3>HTML-калькулятор</h3>
+          <p><span class="exam">Рабочий калькулятор</span> · 16 контрольных примеров пройдено</p>
+        </div>
+      </article>
+    </div>
+
+    <footer class="footer">
+      <span><strong>Маленький повод</strong> · учебный проект</span>
+      <span>2026</span>
+    </footer>
+  </section>
+
+  <!-- SLIDE 3 -->
+  <section class="slide slide-3">
+    <header class="header">
+      <div class="brand">
+        <span class="brand-mark">мп</span>
+        <span class="brand-copy">
+          <strong>Маленький повод</strong>
+          <span>мастерская подарков</span>
+        </span>
+      </div>
+      <div class="slide-meta">
+        <span><span class="slide-number">03</span> / 03</span>
+      </div>
+    </header>
+
+    <div class="slide-3-title">
+      <h2>Итоги</h2>
+      <p>Что уже работает и куда движемся дальше</p>
+    </div>
+
+    <main class="summary-grid">
+      <section class="summary-card limits-card">
+        <h3 class="card-title">Ограничения:</h3>
+        <ul class="limits-list">
+          <li>Учебный проект</li>
+          <li>Оплата и доставка не подключены</li>
+          <li>Сохранение в рамках сессии</li>
+        </ul>
+      </section>
+
+      <section class="summary-card next-card">
+        <h3 class="card-title">Следующий шаг:</h3>
+        <div class="next-arrow" aria-hidden="true">
+          <svg viewBox="0 0 460 72" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+            <path d="M8 36h400M390 12l46 24-46 24" stroke="#C85A3C" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="next-text">Рекламный видеоролик мастерской</p>
+        <p class="next-note">Реклама мастерской</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span><strong>Маленький повод</strong> · учебный проект</span>
+      <span>2026</span>
+    </footer>
+  </section>
+
+</body>
+</html>

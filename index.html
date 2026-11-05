@@ -1,0 +1,3110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#FAF5EF">
+  <meta name="description" content="Учебный калькулятор подарочного набора мастерской «Маленький повод»">
+  <title>Маленький повод — калькулятор подарочного набора</title>
+  <style>
+    :root {
+      --cream: #FAF5EF;
+      --cream-deep: #F3E9DF;
+      --white: #FFFDFA;
+      --terracotta: #C85A3C;
+      --terracotta-ink: #A8462C;
+      --terracotta-dark: #A8462C;
+      --terracotta-fill: #B84C31;
+      --terracotta-soft: #F6E5DD;
+      --graphite: #2B2B2B;
+      --gray: #666666;
+      --line: #E7DCD0;
+      --line-strong: #DCCBBA;
+      --danger: #C0392B;
+      --danger-soft: #FBECE8;
+      --radius: 8px;
+      --shadow-sm: 0 8px 22px rgba(75, 47, 32, 0.06);
+      --shadow-md: 0 18px 44px rgba(75, 47, 32, 0.09);
+      --font: Inter, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      color-scheme: light;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--graphite);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--terracotta);
+      outline-offset: 3px;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .page-shell {
+      width: min(1120px, calc(100% - 48px));
+      min-height: 100vh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      padding: 26px 0 28px;
+    }
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius);
+      background: var(--terracotta-fill);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-copy {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .brand-copy strong {
+      font-size: 15px;
+      font-weight: 650;
+      letter-spacing: -0.015em;
+    }
+
+    .brand-copy span {
+      margin-top: 3px;
+      color: var(--gray);
+      font-size: 11px;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .header-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gray);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .header-note::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--terracotta);
+    }
+
+    .stepper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 28px 0 46px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gray);
+      font-size: 12px;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .step:not(:last-child) {
+      margin-right: 13px;
+    }
+
+    .step:not(:last-child)::after {
+      content: "";
+      width: 54px;
+      height: 1px;
+      margin-left: 13px;
+      background: var(--line);
+    }
+
+    .step-number {
+      width: 27px;
+      height: 27px;
+      flex: 0 0 27px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--gray);
+      font-size: 11px;
+      font-weight: 650;
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .step.is-active {
+      color: var(--graphite);
+      font-weight: 650;
+    }
+
+    .step.is-active .step-number {
+      border-color: var(--terracotta-fill);
+      background: var(--terracotta-fill);
+      color: #fff;
+    }
+
+    .step.is-done {
+      color: var(--terracotta-ink);
+    }
+
+    .step.is-done .step-number {
+      border-color: rgba(200, 90, 60, 0.25);
+      background: var(--terracotta-soft);
+      color: var(--terracotta-ink);
+    }
+
+    main {
+      flex: 1;
+      padding-bottom: 40px;
+    }
+
+    .screen {
+      animation: screen-in 0.28s ease both;
+    }
+
+    @keyframes screen-in {
+      from {
+        opacity: 0;
+        transform: translateY(7px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .screen-heading {
+      max-width: 760px;
+      margin-bottom: 30px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--terracotta-ink);
+      font-size: 11px;
+      font-weight: 650;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 0;
+      font-size: clamp(34px, 4.4vw, 48px);
+      font-weight: 600;
+      line-height: 1.06;
+      letter-spacing: -0.045em;
+    }
+
+    .subtitle {
+      max-width: 560px;
+      margin: 13px 0 0;
+      color: var(--gray);
+      font-size: 17px;
+      line-height: 1.55;
+    }
+
+    .heading-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 28px;
+    }
+
+    .heading-row .screen-heading {
+      margin-bottom: 0;
+    }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .item-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 360px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .item-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--line-strong);
+      box-shadow: var(--shadow-md);
+    }
+
+    .item-card.has-input-error {
+      border-color: rgba(192, 57, 43, 0.38);
+    }
+
+    .icon-wrap {
+      width: 88px;
+      height: 88px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 22px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--cream);
+    }
+
+    .item-icon,
+    .box-icon {
+      display: block;
+    }
+
+    .item-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .item-name {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+
+    .item-price {
+      margin: 0;
+      color: var(--terracotta-ink);
+      font-size: 16px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .item-note {
+      margin: 7px 0 22px;
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .counter {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      margin-top: auto;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--cream);
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .item-card.has-input-error .counter {
+      border-color: rgba(192, 57, 43, 0.35);
+      background: var(--danger-soft);
+    }
+
+    .qty-btn {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--graphite);
+      font-size: 21px;
+      font-weight: 400;
+      line-height: 1;
+      transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .qty-btn:hover:not(:disabled) {
+      background: var(--white);
+      color: var(--terracotta-ink);
+      box-shadow: 0 2px 8px rgba(75, 47, 32, 0.08);
+    }
+
+    .qty-btn:disabled {
+      opacity: 0.28;
+      cursor: not-allowed;
+    }
+
+    .qty-input {
+      width: 52px;
+      min-width: 0;
+      padding: 4px 0;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--graphite);
+      font-size: 17px;
+      font-weight: 650;
+      text-align: center;
+      appearance: textfield;
+    }
+
+    .qty-input::-webkit-outer-spin-button,
+    .qty-input::-webkit-inner-spin-button {
+      margin: 0;
+      appearance: none;
+    }
+
+    .qty-input.is-invalid {
+      color: var(--danger);
+      background: rgba(192, 57, 43, 0.06);
+    }
+
+    .field-error {
+      margin: 8px 2px 0;
+      color: var(--danger);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .action-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-top: 30px;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 253, 250, 0.78);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .selection-summary {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+      min-width: 0;
+    }
+
+    .summary-label {
+      color: var(--gray);
+      font-size: 13px;
+    }
+
+    .summary-count {
+      font-size: 17px;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+
+    .summary-price {
+      margin-left: 8px;
+      padding-left: 18px;
+      border-left: 1px solid var(--line);
+      color: var(--terracotta-ink);
+      font-size: 17px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .action-side {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .helper-text {
+      max-width: 300px;
+      margin: 0;
+      color: var(--gray);
+      font-size: 12.5px;
+      line-height: 1.45;
+      text-align: right;
+    }
+
+    .helper-text.is-error {
+      color: var(--danger);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 46px;
+      padding: 12px 19px;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 650;
+      line-height: 1.2;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .btn-primary {
+      background: var(--terracotta-fill);
+      color: #fff;
+      box-shadow: 0 7px 18px rgba(200, 90, 60, 0.2);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--terracotta-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 9px 22px rgba(200, 90, 60, 0.24);
+    }
+
+    .btn-primary:disabled {
+      background: #E7D5CC;
+      color: #A9968C;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      border-color: var(--line-strong);
+      background: var(--white);
+      color: var(--graphite);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--terracotta);
+      color: var(--terracotta-ink);
+      background: #fff;
+    }
+
+    .btn-ghost {
+      border-color: transparent;
+      background: transparent;
+      color: var(--gray);
+    }
+
+    .btn-ghost:hover {
+      background: var(--cream-deep);
+      color: var(--graphite);
+    }
+
+    .btn-ghost.is-danger:hover {
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+
+    .btn-arrow {
+      font-size: 17px;
+      line-height: 1;
+      transform: translateY(-0.5px);
+    }
+
+    .capacity-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+      padding: 10px 14px;
+      border: 1px solid rgba(200, 90, 60, 0.26);
+      border-radius: var(--radius);
+      background: rgba(200, 90, 60, 0.08);
+      color: var(--terracotta-ink);
+      font-size: 13px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .capacity-pill::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 0 3px rgba(200, 90, 60, 0.1);
+    }
+
+    .capacity-pill.is-excess {
+      border-color: rgba(192, 57, 43, 0.25);
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+
+    .capacity-pill.is-excess::before {
+      box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.09);
+    }
+
+    .box-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .box-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      min-height: 272px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--white);
+      color: var(--graphite);
+      text-align: left;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .box-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--line-strong);
+      box-shadow: var(--shadow-md);
+    }
+
+    .box-card.is-selected {
+      border-color: var(--terracotta);
+      background: #FFFBF8;
+      box-shadow: 0 0 0 1px var(--terracotta), var(--shadow-md);
+    }
+
+    .box-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .box-icon-wrap {
+      width: 68px;
+      height: 68px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--cream);
+    }
+
+    .radio-mark {
+      width: 22px;
+      height: 22px;
+      flex: 0 0 22px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: 50%;
+      background: var(--white);
+      color: #fff;
+      transition: background 0.18s ease, border-color 0.18s ease;
+    }
+
+    .radio-mark svg {
+      width: 12px;
+      height: 12px;
+      opacity: 0;
+      transform: scale(0.7);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    .box-card.is-selected .radio-mark {
+      border-color: var(--terracotta);
+      background: var(--terracotta);
+    }
+
+    .box-card.is-selected .radio-mark svg {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .box-name {
+      margin: 0;
+      font-size: 23px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+
+    .box-capacity {
+      margin: 6px 0 20px;
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .box-card-bottom {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px dashed var(--line);
+    }
+
+    .box-price {
+      color: var(--terracotta-ink);
+      font-size: 21px;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .box-size-visual {
+      color: var(--gray);
+      font-size: 12px;
+    }
+
+    .capacity-error {
+      display: flex;
+      gap: 11px;
+      align-items: flex-start;
+      margin: 18px 0 0;
+      padding: 14px 16px;
+      border: 1px solid rgba(192, 57, 43, 0.2);
+      border-radius: var(--radius);
+      background: var(--danger-soft);
+      color: var(--danger);
+      font-size: 13.5px;
+      line-height: 1.5;
+    }
+
+    .capacity-error::before {
+      content: "!";
+      width: 19px;
+      height: 19px;
+      flex: 0 0 19px;
+      display: grid;
+      place-items: center;
+      margin-top: 1px;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .action-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .packaging-summary {
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .packaging-summary strong {
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .estimate-shell {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .estimate-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: var(--shadow-md);
+    }
+
+    .receipt-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 24px 30px;
+      border-bottom: 1px dashed var(--line);
+    }
+
+    .receipt-brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+
+    .receipt-brand strong {
+      font-size: 15px;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+
+    .receipt-brand span {
+      margin-top: 3px;
+      color: var(--gray);
+      font-size: 12px;
+    }
+
+    .receipt-badge {
+      padding: 6px 9px;
+      border: 1px solid rgba(200, 90, 60, 0.28);
+      border-radius: var(--radius);
+      color: var(--terracotta-ink);
+      font-size: 10px;
+      font-weight: 650;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .receipt-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.16fr) minmax(300px, 0.84fr);
+    }
+
+    .receipt-left {
+      padding: 28px 30px 32px;
+      border-right: 1px dashed var(--line);
+    }
+
+    .receipt-right {
+      padding: 28px 30px 32px;
+      background: #FCF8F3;
+    }
+
+    .block-title {
+      margin: 0 0 16px;
+      color: var(--gray);
+      font-size: 11px;
+      font-weight: 650;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .composition-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .composition-item {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 12px 0;
+      border-bottom: 1px dashed var(--line);
+      font-size: 15px;
+    }
+
+    .composition-item:first-child {
+      padding-top: 0;
+    }
+
+    .composition-item:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .composition-name {
+      min-width: 0;
+    }
+
+    .composition-quantity {
+      margin-left: 2px;
+      color: var(--gray);
+      white-space: nowrap;
+    }
+
+    .composition-sum {
+      flex: 0 0 auto;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .summary-list {
+      margin: 0;
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 11px 0;
+      border-bottom: 1px dashed var(--line);
+    }
+
+    .summary-row:first-child {
+      padding-top: 0;
+    }
+
+    .summary-row dt {
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .summary-row dd {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 650;
+      text-align: right;
+    }
+
+    .summary-row.is-discount dd {
+      color: var(--terracotta-ink);
+    }
+
+    .summary-row.is-muted dd {
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    .total-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 24px;
+      padding: 19px 20px;
+      border-radius: var(--radius);
+      background: var(--terracotta-fill);
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(200, 90, 60, 0.2);
+    }
+
+    .total-label {
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 1;
+    }
+
+    .total-value {
+      font-size: clamp(31px, 4vw, 42px);
+      font-weight: 650;
+      line-height: 1;
+      letter-spacing: -0.045em;
+      white-space: nowrap;
+    }
+
+    .total-hint {
+      margin: 12px 2px 0;
+      color: var(--gray);
+      font-size: 11.5px;
+      line-height: 1.45;
+      text-align: right;
+    }
+
+    .receipt-footer {
+      padding: 22px 30px 28px;
+      border-top: 1px dashed var(--line);
+    }
+
+    .disclaimer {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      margin: 0 0 18px;
+      color: var(--gray);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .disclaimer::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      flex: 0 0 5px;
+      margin-top: 7px;
+      border-radius: 50%;
+      background: var(--terracotta);
+    }
+
+    .estimate-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .estimate-actions .nav-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-left: auto;
+    }
+
+    .download-status {
+      min-height: 18px;
+      margin: 12px 0 0;
+      color: var(--terracotta-ink);
+      font-size: 12px;
+    }
+
+    .site-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--gray);
+      font-size: 12px;
+    }
+
+    .site-footer p {
+      margin: 0;
+    }
+
+    .site-footer .footer-brand {
+      color: var(--graphite);
+      font-weight: 600;
+    }
+
+    @media (max-width: 940px) {
+      .item-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .item-card {
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 88px minmax(0, 1fr) 188px;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .icon-wrap {
+        width: 88px;
+        height: 88px;
+        margin: 0;
+      }
+
+      .item-content {
+        min-width: 0;
+      }
+
+      .item-note {
+        margin-bottom: 0;
+      }
+
+      .counter {
+        margin-top: 0;
+      }
+
+      .field-error {
+        grid-column: 2 / -1;
+        margin-top: -8px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page-shell {
+        width: min(100% - 32px, 620px);
+        padding-top: 18px;
+      }
+
+      .site-header {
+        padding-bottom: 18px;
+      }
+
+      .header-note {
+        display: none;
+      }
+
+      .stepper {
+        margin: 22px 0 34px;
+      }
+
+      .step:not(:last-child) {
+        margin-right: 7px;
+      }
+
+      .step:not(:last-child)::after {
+        width: 25px;
+        margin-left: 7px;
+      }
+
+      .step {
+        gap: 6px;
+        font-size: 11px;
+      }
+
+      .step-number {
+        width: 24px;
+        height: 24px;
+        flex-basis: 24px;
+        font-size: 10px;
+      }
+
+      .screen-heading {
+        margin-bottom: 24px;
+      }
+
+      .subtitle {
+        font-size: 15px;
+      }
+
+      .heading-row {
+        display: block;
+      }
+
+      .capacity-pill {
+        margin-top: 18px;
+      }
+
+      .item-card {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 20px;
+      }
+
+      .item-card .icon-wrap {
+        width: 76px;
+        height: 76px;
+        margin-bottom: 18px;
+      }
+
+      .item-note {
+        margin-bottom: 18px;
+      }
+
+      .field-error {
+        margin-top: 8px;
+      }
+
+      .box-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .box-card {
+        min-height: 238px;
+      }
+
+      .action-bar {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 16px;
+        padding: 17px;
+      }
+
+      .action-side {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .helper-text {
+        max-width: none;
+        text-align: left;
+      }
+
+      .action-side .btn,
+      .action-buttons,
+      .action-buttons .btn {
+        width: 100%;
+      }
+
+      .action-buttons {
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+
+      .selection-summary {
+        justify-content: space-between;
+      }
+
+      .summary-price {
+        margin-left: auto;
+      }
+
+      .receipt-top {
+        padding: 20px;
+      }
+
+      .receipt-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .receipt-left {
+        padding: 24px 20px 26px;
+        border-right: 0;
+        border-bottom: 1px dashed var(--line);
+      }
+
+      .receipt-right {
+        padding: 24px 20px 26px;
+      }
+
+      .receipt-footer {
+        padding: 20px;
+      }
+
+      .estimate-actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .estimate-actions .btn {
+        width: 100%;
+      }
+
+      .estimate-actions .nav-actions {
+        flex-direction: column;
+        width: 100%;
+        margin: 6px 0 0;
+      }
+
+      .total-hint {
+        text-align: left;
+      }
+
+      .site-footer {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 7px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+        font-size: 12px;
+      }
+
+      .brand-copy strong {
+        font-size: 14px;
+      }
+
+      .step:not(:last-child)::after {
+        width: 14px;
+      }
+
+      .step-label {
+        font-size: 10px;
+      }
+
+      .item-top {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .action-bar {
+        margin-top: 22px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* === НОВЫЕ КЛАССЫ: сохранение и сравнение вариантов === */
+    .saved-variants-panel {
+      margin-bottom: 24px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 253, 250, 0.72);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .saved-variants-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 16px;
+    }
+
+    .saved-variants-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+
+    .saved-variants-hint {
+      margin: 5px 0 0;
+      color: var(--gray);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+
+    .saved-variants-head .btn {
+      min-height: 38px;
+      padding: 8px 13px;
+      font-size: 12.5px;
+    }
+
+    .saved-variants-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .saved-slot {
+      display: flex;
+      flex-direction: column;
+      min-height: 154px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--white);
+    }
+
+    .saved-slot.is-empty {
+      border-style: dashed;
+      background: rgba(250, 245, 239, 0.55);
+    }
+
+    .saved-slot-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .saved-slot-label {
+      color: var(--gray);
+      font-size: 12.5px;
+      font-weight: 650;
+      letter-spacing: 0.01em;
+    }
+
+    .saved-slot-empty {
+      margin: auto 0;
+      padding: 18px 0;
+      color: var(--gray);
+      font-size: 13px;
+    }
+
+    .saved-slot-composition {
+      margin: 10px 0 5px;
+      color: var(--graphite);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+
+    .saved-slot-meta {
+      margin: 0;
+      color: var(--gray);
+      font-size: 13px;
+    }
+
+    .saved-slot-meta strong {
+      color: var(--terracotta-ink);
+      font-weight: 650;
+    }
+
+    .saved-slot-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 14px;
+    }
+
+    .saved-slot-actions .btn {
+      min-height: 36px;
+      padding: 8px 12px;
+      font-size: 12.5px;
+    }
+
+    .btn-outline {
+      border-color: var(--terracotta);
+      background: transparent;
+      color: var(--terracotta-ink);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--terracotta-ink);
+      background: var(--terracotta-soft);
+    }
+
+    .btn-delete {
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--gray);
+    }
+
+    .btn-delete:hover {
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+
+    .compare-shell {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: stretch;
+      gap: 20px;
+    }
+
+    .compare-card {
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .compare-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .compare-card-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+
+    .compare-card-note {
+      margin: 5px 0 0;
+      color: var(--gray);
+      font-size: 12px;
+    }
+
+    .compare-variant-badge {
+      flex: 0 0 auto;
+      padding: 5px 8px;
+      border: 1px solid rgba(200, 90, 60, 0.25);
+      border-radius: var(--radius);
+      color: var(--terracotta-ink);
+      font-size: 10px;
+      font-weight: 650;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .compare-card .composition-list {
+      margin-bottom: 18px;
+    }
+
+    .compare-card .composition-item {
+      padding: 9px 0;
+      font-size: 14px;
+    }
+
+    .compare-summary {
+      margin: 0;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+
+    .compare-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 8px 0;
+    }
+
+    .compare-row dt {
+      color: var(--gray);
+      font-size: 13px;
+    }
+
+    .compare-row dd {
+      margin: 0;
+      color: var(--graphite);
+      font-size: 14px;
+      font-weight: 650;
+      text-align: right;
+    }
+
+    .compare-row.is-discount dd {
+      color: var(--terracotta-ink);
+    }
+
+    .compare-total {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 16px;
+      padding: 15px 16px;
+      border: 1px solid rgba(200, 90, 60, 0.22);
+      border-radius: var(--radius);
+      background: var(--terracotta-soft);
+    }
+
+    .compare-total span {
+      color: var(--gray);
+      font-size: 12px;
+    }
+
+    .compare-total strong {
+      color: var(--terracotta-ink);
+      font-size: 28px;
+      font-weight: 650;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      white-space: nowrap;
+    }
+
+    .compare-load {
+      width: 100%;
+      margin-top: 14px;
+    }
+
+    .compare-actions {
+      margin-top: 22px;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 253, 250, 0.78);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .compare-exports {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .compare-export-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .compare-export-row .btn {
+      flex: 1 1 210px;
+    }
+
+    .compare-footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--line);
+    }
+
+    .compare-status {
+      min-height: 18px;
+      margin: 0;
+      color: var(--terracotta-ink);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(43, 43, 43, 0.38);
+    }
+
+    .modal-card {
+      width: min(440px, 100%);
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: 0 24px 70px rgba(43, 43, 43, 0.22);
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+
+    .modal-text {
+      margin: 10px 0 0;
+      color: var(--gray);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+    }
+
+    .modal-actions .btn {
+      flex: 1 1 110px;
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    .variant-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      z-index: 90;
+      max-width: calc(100% - 32px);
+      padding: 12px 18px;
+      border: 1px solid rgba(250, 245, 239, 0.16);
+      border-radius: var(--radius);
+      background: var(--graphite);
+      color: var(--cream);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 14px 34px rgba(43, 43, 43, 0.24);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 12px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .variant-toast.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (max-width: 760px) {
+      .saved-variants-panel {
+        padding: 16px;
+      }
+
+      .saved-variants-head {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .saved-variants-head .btn {
+        width: 100%;
+      }
+
+      .saved-variants-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .saved-slot {
+        min-height: 142px;
+      }
+
+      .saved-slot-actions .btn {
+        flex: 1;
+      }
+
+      .compare-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .compare-card {
+        padding: 20px;
+      }
+
+      .compare-export-row {
+        flex-direction: column;
+      }
+
+      .compare-export-row .btn {
+        width: 100%;
+        flex-basis: auto;
+      }
+
+      .compare-footer-row {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .compare-footer-row .btn {
+        width: 100%;
+      }
+
+      .compare-status {
+        text-align: left;
+      }
+
+      .modal-actions {
+        flex-direction: column;
+      }
+
+      .modal-actions .btn {
+        width: 100%;
+        flex-basis: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="brand" aria-label="Мастерская «Маленький повод»">
+        <span class="brand-mark" aria-hidden="true">мп</span>
+        <span class="brand-copy">
+          <strong>Маленький повод</strong>
+          <span>мастерская подарков</span>
+        </span>
+      </div>
+      <div class="header-note">Учебный калькулятор</div>
+    </header>
+
+    <ol class="stepper" aria-label="Этапы расчёта">
+      <li class="step is-active" data-step="1" aria-current="step">
+        <span class="step-number">1</span>
+        <span class="step-label">Предметы</span>
+      </li>
+      <li class="step" data-step="2">
+        <span class="step-number">2</span>
+        <span class="step-label">Упаковка</span>
+      </li>
+      <li class="step" data-step="3">
+        <span class="step-number">3</span>
+        <span class="step-label">Смета</span>
+      </li>
+    </ol>
+    <main>
+      <section id="screen-items" class="screen" data-screen="1">
+        <div class="screen-heading">
+          <p class="eyebrow">Шаг 1 из 3</p>
+          <h1>Собери свой набор</h1>
+          <p class="subtitle">Выбери количество каждого предмета</p>
+        </div>
+
+        <div class="item-grid" aria-label="Предметы для набора">
+          <article class="item-card" data-item-card="candle">
+            <div class="icon-wrap">
+              <svg class="item-icon" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect width="64" height="64" rx="8" fill="#FAF5EF"/>
+                <path d="M32 10.5c3.3 3.4 5.6 6.1 5.6 9.3a5.6 5.6 0 0 1-11.2 0c0-3.2 2.3-5.9 5.6-9.3Z" fill="#FAF5EF" stroke="#C85A3C" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M32 25.5V30" stroke="#C85A3C" stroke-width="2" stroke-linecap="round"/>
+                <path d="M25.5 30h13v16.5a4.5 4.5 0 0 1-4.5 4.5h-4a4.5 4.5 0 0 1-4.5-4.5V30Z" fill="#FAF5EF" stroke="#C85A3C" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M25.5 34.5c0 2.2-.9 2.9-.9 5M38.5 35c0 1.8.8 2.4.8 4.1" stroke="#C85A3C" stroke-width="2" stroke-linecap="round" opacity=".6"/>
+              </svg>
+            </div>
+            <div class="item-content">
+              <div class="item-top">
+                <h2 class="item-name">Свеча</h2>
+                <p class="item-price">500 ₽</p>
+              </div>
+              <p class="item-note">Тёплый свет для тихого вечера</p>
+            </div>
+            <div class="counter" aria-label="Количество свечей">
+              <button class="qty-btn" type="button" data-action="decrease" data-key="candle" aria-label="Уменьшить количество свечей">−</button>
+              <input class="qty-input" id="qty-candle" type="text" inputmode="numeric" autocomplete="off" value="0" aria-label="Количество свечей" aria-describedby="error-candle">
+              <button class="qty-btn" type="button" data-action="increase" data-key="candle" aria-label="Увеличить количество свечей">+</button>
+            </div>
+            <p class="field-error" id="error-candle" role="alert" hidden></p>
+          </article>
+
+          <article class="item-card" data-item-card="notebook">
+            <div class="icon-wrap">
+              <svg class="item-icon" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect width="64" height="64" rx="8" fill="#FAF5EF"/>
+                <rect x="17" y="10.5" width="30" height="43" rx="4" fill="#FAF5EF" stroke="#C85A3C" stroke-width="2"/>
+                <path d="M24 10.5v43" stroke="#C85A3C" stroke-width="2"/>
+                <path d="M40.5 10.5v43" stroke="#C85A3C" stroke-width="2"/>
+                <path d="M30.5 10.5h7V26L34 23.2 30.5 26V10.5Z" fill="#FAF5EF" stroke="#C85A3C" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M24 18h4M24 23h4" stroke="#C85A3C" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+              </svg>
+            </div>
+            <div class="item-content">
+              <div class="item-top">
+                <h2 class="item-name">Блокнот</h2>
+                <p class="item-price">350 ₽</p>
+              </div>
+              <p class="item-note">Для мыслей, планов и списков</p>
+            </div>
+            <div class="counter" aria-label="Количество блокнотов">
+              <button class="qty-btn" type="button" data-action="decrease" data-key="notebook" aria-label="Уменьшить количество блокнотов">−</button>
+              <input class="qty-input" id="qty-notebook" type="text" inputmode="numeric" autocomplete="off" value="0" aria-label="Количество блокнотов" aria-describedby="error-notebook">
+              <button class="qty-btn" type="button" data-action="increase" data-key="notebook" aria-label="Увеличить количество блокнотов">+</button>
+            </div>
+            <p class="field-error" id="error-notebook" role="alert" hidden></p>
+          </article>
+
+          <article class="item-card" data-item-card="card">
+            <div class="icon-wrap">
+              <svg class="item-icon" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect width="64" height="64" rx="8" fill="#FAF5EF"/>
+                <rect x="11" y="19" width="42" height="30" rx="2.5" fill="#FAF5EF" stroke="#C85A3C" stroke-width="2"/>
+                <path d="M32 19v30" stroke="#C85A3C" stroke-width="2" opacity=".55"/>
+                <path d="M20 41.5c3.2-5.5 6.6-9 11.5-12" stroke="#C85A3C" stroke-width="2" stroke-linecap="round"/>
+                <path d="M24.5 36.8c-1.9-.1-3.4-.8-4.6-2.1M27 33c-1.4-1-2.4-2.4-3-4M30.3 30c-.3-1.7 0-3.3 1-4.8M30 35.8c1.6-.3 2.9-1 3.9-2.2M27.5 39.1c1.9.1 3.5-.4 4.8-1.5" stroke="#C85A3C" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="item-content">
+              <div class="item-top">
+                <h2 class="item-name">Открытка</h2>
+                <p class="item-price">150 ₽</p>
+              </div>
+              <p class="item-note">С веточкой и местом для пожелания</p>
+            </div>
+            <div class="counter" aria-label="Количество открыток">
+              <button class="qty-btn" type="button" data-action="decrease" data-key="card" aria-label="Уменьшить количество открыток">−</button>
+              <input class="qty-input" id="qty-card" type="text" inputmode="numeric" autocomplete="off" value="0" aria-label="Количество открыток" aria-describedby="error-card">
+              <button class="qty-btn" type="button" data-action="increase" data-key="card" aria-label="Увеличить количество открыток">+</button>
+            </div>
+            <p class="field-error" id="error-card" role="alert" hidden></p>
+          </article>
+        </div>
+
+        <div class="action-bar">
+          <div class="selection-summary" aria-live="polite">
+            <span class="summary-label">В наборе</span>
+            <span class="summary-count" id="items-count">0 предметов</span>
+            <span class="summary-price" id="items-content">0 ₽</span>
+          </div>
+          <div class="action-side">
+            <p class="helper-text" id="items-helper">Добавь хотя бы один предмет</p>
+            <button class="btn btn-primary" type="button" id="to-packaging" disabled>
+              Выбрать коробку
+              <span class="btn-arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-packaging" class="screen" data-screen="2" hidden>
+        <div class="heading-row">
+          <div class="screen-heading">
+            <p class="eyebrow">Шаг 2 из 3</p>
+            <h1>Выбери коробку</h1>
+            <p class="subtitle">Проверь, что всё помещается, и выбери упаковку</p>
+          </div>
+          <div class="capacity-pill" id="capacity-pill" aria-live="polite">Занято 0 мест</div>
+        </div>
+
+        <div class="box-grid" role="group" aria-label="Варианты упаковки">
+          <button class="box-card" type="button" data-box="small" aria-pressed="false">
+            <span class="box-card-top">
+              <span class="box-icon-wrap">
+                <svg class="box-icon" width="48" height="48" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <rect width="64" height="64" rx="8" fill="#FAF5EF"/>
+                  <path d="M18 31 32 24l14 7v14l-14 7-14-7V31Z" fill="#FAF5EF" stroke="#C85A3C" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M18 31l14 7 14-7M32 38v14" stroke="#C85A3C" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M19 13l13-6 13 6-13 6-13-6Z" fill="#FAF5EF" stroke="#C85A3C" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M19 13v2l13 6 13-6v-2" stroke="#C85A3C" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="radio-mark" aria-hidden="true">
+                <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m2.2 6.2 2.4 2.4 5.2-5.2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </span>
+            <span class="box-name">Маленькая</span>
+            <span class="box-capacity">до 3 предметов</span>
+            <span class="box-card-bottom">
+              <span class="box-price">200 ₽</span>
+              <span class="box-size-visual">компактная</span>
+            </span>
+          </button>
+
+          <button class="box-card" type="button" data-box="large" aria-pressed="false">
+            <span class="box-card-top">
+              <span class="box-icon-wrap">
+                <svg class="box-icon" width="48" height="48" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <rect width="64" height="64" rx="8" fill="#FAF5EF"/>
+                  <path d="M10 35 32 26l22 9v13L32 57 10 48V35Z" fill="#FAF5EF" stroke="#C85A3C" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M10 35l22 9 22-9M32 44v13" stroke="#C85A3C" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M14 14 32 7l18 7-18 7-18-7Z" fill="#FAF5EF" stroke="#C85A3C" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M14 14v2l18 7 18-7v-2" stroke="#C85A3C" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="radio-mark" aria-hidden="true">
+                <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m2.2 6.2 2.4 2.4 5.2-5.2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </span>
+            <span class="box-name">Большая</span>
+            <span class="box-capacity">до 6 предметов</span>
+            <span class="box-card-bottom">
+              <span class="box-price">350 ₽</span>
+              <span class="box-size-visual">для всего сразу</span>
+            </span>
+          </button>
+        </div>
+
+        <p class="capacity-error" id="capacity-error" role="alert" hidden></p>
+
+        <div class="action-bar">
+          <div class="packaging-summary" aria-live="polite">
+            <span class="summary-label">Упаковка</span>
+            <strong id="packaging-summary">не выбрана</strong>
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-secondary" type="button" id="back-to-items">Назад к предметам</button>
+            <button class="btn btn-primary" type="button" id="to-estimate" disabled>
+              Показать смету
+              <span class="btn-arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-estimate" class="screen" data-screen="3" hidden>
+        <div class="screen-heading">
+          <p class="eyebrow">Шаг 3 из 3</p>
+          <h1>Смета набора</h1>
+          <p class="subtitle">Проверь состав и скачай расчёт — это не заказ и не оплата</p>
+        </div>
+
+        <div class="saved-variants-panel" aria-labelledby="saved-variants-title">
+          <div class="saved-variants-head">
+            <div>
+              <h2 class="saved-variants-title" id="saved-variants-title">Сохранённые варианты</h2>
+              <p class="saved-variants-hint">Сохрани до двух наборов и сравни их между собой</p>
+            </div>
+            <button class="btn btn-secondary" type="button" id="compare-variants" disabled>Сравнить варианты</button>
+          </div>
+          <div class="saved-variants-grid" id="saved-variants-grid"></div>
+        </div>
+
+        <div class="estimate-shell">
+          <article class="estimate-card" aria-labelledby="estimate-card-title">
+            <div class="receipt-top">
+              <div class="receipt-brand">
+                <strong id="estimate-card-title">Маленький повод</strong>
+                <span>учебная смета подарочного набора</span>
+              </div>
+              <span class="receipt-badge">учебно</span>
+            </div>
+
+            <div class="receipt-grid">
+              <div class="receipt-left">
+                <h2 class="block-title">Состав</h2>
+                <ul class="composition-list" id="composition-list"></ul>
+              </div>
+
+              <div class="receipt-right">
+                <h2 class="block-title">Расчёт</h2>
+                <dl class="summary-list">
+                  <div class="summary-row">
+                    <dt>Содержимое</dt>
+                    <dd id="content-value">0 ₽</dd>
+                  </div>
+                  <div class="summary-row is-muted" id="discount-row">
+                    <dt id="discount-label">Скидка не применяется</dt>
+                    <dd id="discount-value">0 ₽</dd>
+                  </div>
+                  <div class="summary-row">
+                    <dt>Упаковка</dt>
+                    <dd id="packaging-value">—</dd>
+                  </div>
+                </dl>
+
+                <div class="total-box">
+                  <span class="total-label">Итого</span>
+                  <strong class="total-value" id="total-value">0 ₽</strong>
+                </div>
+                <p class="total-hint" id="total-hint"></p>
+              </div>
+            </div>
+
+            <div class="receipt-footer">
+              <p class="disclaimer">Это учебная смета, а не заказ и не оплата</p>
+              <div class="estimate-actions">
+                <button class="btn btn-primary" type="button" id="download-txt">Скачать TXT</button>
+                <button class="btn btn-secondary" type="button" id="download-csv">Скачать CSV</button>
+                <button class="btn btn-primary" type="button" id="save-variant" disabled>Сохранить вариант</button>
+                <div class="nav-actions">
+                  <button class="btn btn-ghost" type="button" id="back-to-packaging">Вернуться к выбору</button>
+                  <button class="btn btn-ghost is-danger" type="button" id="new-calculation">Новый расчёт</button>
+                </div>
+              </div>
+              <p class="download-status" id="download-status" aria-live="polite"></p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="screen-compare" class="screen" data-screen="4" hidden>
+        <div class="screen-heading">
+          <p class="eyebrow">Сравнение</p>
+          <h1>Сравнение вариантов</h1>
+          <p class="subtitle">Два сохранённых набора рядом — выбери подходящий</p>
+        </div>
+
+        <div class="compare-shell">
+          <div class="compare-grid" id="compare-grid"></div>
+
+          <div class="compare-actions">
+            <div class="compare-exports" aria-label="Выгрузка сохранённых вариантов">
+              <div class="compare-export-row">
+                <button class="btn btn-secondary" type="button" id="export-variant-1-txt">Выгрузить вариант 1 (TXT)</button>
+                <button class="btn btn-secondary" type="button" id="export-variant-1-csv">Выгрузить вариант 1 (CSV)</button>
+              </div>
+              <div class="compare-export-row">
+                <button class="btn btn-secondary" type="button" id="export-variant-2-txt">Выгрузить вариант 2 (TXT)</button>
+                <button class="btn btn-secondary" type="button" id="export-variant-2-csv">Выгрузить вариант 2 (CSV)</button>
+              </div>
+            </div>
+            <div class="compare-footer-row">
+              <button class="btn btn-ghost" type="button" id="back-to-estimate">Вернуться к смете</button>
+              <p class="compare-status" id="compare-status" aria-live="polite"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <p><span class="footer-brand">Маленький повод</span> · мастерская подарков</p>
+      <p>Все цены учебные. Доставка и оплата не подключены.</p>
+    </footer>
+  </div>
+
+  <div class="modal-backdrop" id="replace-modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="replace-modal-title" aria-describedby="replace-modal-text">
+      <h2 class="modal-title" id="replace-modal-title">Слоты заняты</h2>
+      <p class="modal-text" id="replace-modal-text">Оба слота заняты. Заменить вариант 1 или вариант 2?</p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" type="button" data-replace-slot="0">Заменить 1</button>
+        <button class="btn btn-secondary" type="button" data-replace-slot="1">Заменить 2</button>
+        <button class="btn btn-ghost" type="button" id="cancel-replace">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="variant-toast" id="variant-toast" role="status" aria-live="polite"></div>
+  <script>
+    (() => {
+      "use strict";
+
+      const ITEMS = [
+        { key: "candle", name: "Свеча", price: 500 },
+        { key: "notebook", name: "Блокнот", price: 350 },
+        { key: "card", name: "Открытка", price: 150 }
+      ];
+
+      const BOXES = {
+        small: {
+          key: "small",
+          name: "Маленькая",
+          display: "Маленькая коробка",
+          file: "маленькая коробка",
+          accusative: "маленькую",
+          capacity: 3,
+          price: 200
+        },
+        large: {
+          key: "large",
+          name: "Большая",
+          display: "Большая коробка",
+          file: "большая коробка",
+          accusative: "большую",
+          capacity: 6,
+          price: 350
+        }
+      };
+
+      const MAX_QTY = 3;
+      const DISCOUNT_THRESHOLD = 5;
+      const DISCOUNT_RATE = 0.1;
+      const ERROR_INTEGER = "Количество — целое число от 0 до 3";
+      const ERROR_MAX = "Одного вида может быть не больше 3";
+
+      const state = {
+        screen: 1,
+        counts: { candle: 0, notebook: 0, card: 0 },
+        raw: { candle: "0", notebook: "0", card: "0" },
+        inputErrors: { candle: null, notebook: null, card: null },
+        box: null,
+        savedVariants: [null, null]
+      };
+
+      const $ = (selector, root = document) => root.querySelector(selector);
+      const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+
+      const els = {
+        screens: $$(".screen"),
+        steps: $$(".step"),
+        itemCards: $$(".item-card"),
+        qtyInputs: {},
+        qtyErrors: {},
+        toPackaging: $("#to-packaging"),
+        itemsCount: $("#items-count"),
+        itemsContent: $("#items-content"),
+        itemsHelper: $("#items-helper"),
+        capacityPill: $("#capacity-pill"),
+        capacityError: $("#capacity-error"),
+        packagingSummary: $("#packaging-summary"),
+        toEstimate: $("#to-estimate"),
+        compositionList: $("#composition-list"),
+        contentValue: $("#content-value"),
+        discountRow: $("#discount-row"),
+        discountLabel: $("#discount-label"),
+        discountValue: $("#discount-value"),
+        packagingValue: $("#packaging-value"),
+        totalValue: $("#total-value"),
+        totalHint: $("#total-hint"),
+        downloadStatus: $("#download-status")
+      };
+
+      ITEMS.forEach((item) => {
+        els.qtyInputs[item.key] = $(`#qty-${item.key}`);
+        els.qtyErrors[item.key] = $(`#error-${item.key}`);
+      });
+
+      function plural(number, one, few, many) {
+        const mod10 = Math.abs(number) % 10;
+        const mod100 = Math.abs(number) % 100;
+        if (mod10 === 1 && mod100 !== 11) return one;
+        if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
+        return many;
+      }
+
+      function itemWord(number) {
+        return plural(number, "предмет", "предмета", "предметов");
+      }
+
+      function formatNumber(number) {
+        return new Intl.NumberFormat("ru-RU")
+          .format(Math.round(number))
+          .replace(/\u00A0/g, " ");
+      }
+
+      function formatMoney(number) {
+        return `${formatNumber(number)} ₽`;
+      }
+
+      function totalItems() {
+        return ITEMS.reduce((sum, item) => sum + state.counts[item.key], 0);
+      }
+
+      function contentTotal() {
+        return ITEMS.reduce((sum, item) => sum + state.counts[item.key] * item.price, 0);
+      }
+
+      function parseQuantity(raw) {
+        const value = String(raw).trim();
+        if (!/^\d+$/.test(value)) {
+          return { error: ERROR_INTEGER };
+        }
+        const number = Number(value);
+        if (!Number.isSafeInteger(number)) {
+          return { error: ERROR_INTEGER };
+        }
+        if (number > MAX_QTY) {
+          return { error: ERROR_MAX };
+        }
+        return { value: number };
+      }
+
+      function hasInputErrors() {
+        return Object.values(state.inputErrors).some(Boolean);
+      }
+
+      function calculate() {
+        const items = totalItems();
+        const content = contentTotal();
+        const discount = items >= DISCOUNT_THRESHOLD ? Math.round(content * DISCOUNT_RATE) : 0;
+        const afterDiscount = content - discount;
+        const box = state.box ? BOXES[state.box] : null;
+        const boxPrice = box ? box.price : 0;
+
+        return {
+          items,
+          content,
+          discount,
+          afterDiscount,
+          box,
+          total: afterDiscount + boxPrice
+        };
+      }
+
+      function syncQuantityUI(key) {
+        const input = els.qtyInputs[key];
+        const errorEl = els.qtyErrors[key];
+        const card = $(`[data-item-card="${key}"]`);
+        const error = state.inputErrors[key];
+        const minus = card.querySelector('[data-action="decrease"]');
+        const plus = card.querySelector('[data-action="increase"]');
+
+        card.classList.toggle("has-input-error", Boolean(error));
+        input.classList.toggle("is-invalid", Boolean(error));
+        input.setAttribute("aria-invalid", String(Boolean(error)));
+
+        if (error) {
+          errorEl.textContent = error;
+          errorEl.hidden = false;
+        } else {
+          errorEl.textContent = "";
+          errorEl.hidden = true;
+        }
+
+        minus.disabled = state.counts[key] <= 0;
+        plus.disabled = state.counts[key] >= MAX_QTY;
+      }
+
+      function renderItems() {
+        const items = totalItems();
+        const content = contentTotal();
+        const firstError = ITEMS.map((item) => state.inputErrors[item.key]).find(Boolean);
+
+        els.itemsCount.textContent = `${items} ${itemWord(items)}`;
+        els.itemsContent.textContent = formatMoney(content);
+        els.toPackaging.disabled = items === 0 || Boolean(firstError);
+        els.itemsHelper.classList.toggle("is-error", Boolean(firstError));
+
+        if (firstError) {
+          els.itemsHelper.textContent = firstError;
+        } else if (items === 0) {
+          els.itemsHelper.textContent = "Добавь хотя бы один предмет";
+        } else if (items < DISCOUNT_THRESHOLD) {
+          const left = DISCOUNT_THRESHOLD - items;
+          els.itemsHelper.textContent = `До скидки 10% — ещё ${left} ${itemWord(left)}`;
+        } else {
+          els.itemsHelper.textContent = "Скидка 10% на содержимое уже учтена";
+        }
+      }
+
+      function validateAllItems() {
+        let valid = true;
+
+        ITEMS.forEach((item) => {
+          const parsed = parseQuantity(state.raw[item.key]);
+          if (parsed.error) {
+            state.inputErrors[item.key] = parsed.error;
+            valid = false;
+          } else {
+            state.inputErrors[item.key] = null;
+            state.counts[item.key] = parsed.value;
+          }
+          syncQuantityUI(item.key);
+        });
+
+        renderItems();
+        return valid;
+      }
+
+      function updateStepper(current) {
+        els.steps.forEach((step) => {
+          const number = Number(step.dataset.step);
+          step.classList.toggle("is-active", number === current);
+          step.classList.toggle("is-done", number < current);
+          if (number === current) {
+            step.setAttribute("aria-current", "step");
+          } else {
+            step.removeAttribute("aria-current");
+          }
+        });
+      }
+
+      function showScreen(number, options = {}) {
+        state.screen = number;
+        els.screens.forEach((screen) => {
+          screen.hidden = Number(screen.dataset.screen) !== number;
+        });
+        updateStepper(number);
+
+        if (number === 1) {
+          renderItems();
+        } else if (number === 2) {
+          renderPackaging();
+        } else if (number === 3) {
+          renderEstimate();
+        }
+
+        if (options.scroll !== false) {
+          const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+        }
+      }
+
+      function goToPackaging() {
+        if (!validateAllItems()) return;
+
+        const items = totalItems();
+        if (items === 0) {
+          renderItems();
+          return;
+        }
+
+        if (!state.box) {
+          state.box = items <= BOXES.small.capacity ? "small" : "large";
+        }
+
+        showScreen(2);
+      }
+
+      function capacityMessage(box, items) {
+        const capacityWord = itemWord(box.capacity);
+        const other = box.key === "small" ? BOXES.large : BOXES.small;
+        const base = `В ${box.accusative} коробку помещается ${box.capacity} ${capacityWord}, выбрано ${items}.`;
+
+        if (items <= other.capacity) {
+          return `${base} Убери лишнее или выбери ${other.accusative} коробку`;
+        }
+
+        return `${base} Убери лишнее — в другую коробку столько тоже не поместится`;
+      }
+
+      function renderPackaging() {
+        const items = totalItems();
+        const box = state.box ? BOXES[state.box] : null;
+
+        $$(".box-card").forEach((card) => {
+          const selected = card.dataset.box === state.box;
+          card.classList.toggle("is-selected", selected);
+          card.setAttribute("aria-pressed", String(selected));
+        });
+
+        if (!box) {
+          els.capacityPill.textContent = `Занято ${items} ${itemWord(items)}`;
+          els.capacityPill.classList.remove("is-excess");
+          els.packagingSummary.textContent = "не выбрана";
+          els.capacityError.hidden = true;
+          els.capacityError.textContent = "";
+          els.toEstimate.disabled = true;
+          return;
+        }
+
+        const exceeds = items > box.capacity;
+        els.capacityPill.textContent = `Занято ${items} из ${box.capacity} мест`;
+        els.capacityPill.classList.toggle("is-excess", exceeds);
+        els.packagingSummary.textContent = `${box.display} · ${formatMoney(box.price)}`;
+        els.toEstimate.disabled = exceeds || items === 0;
+
+        if (exceeds) {
+          els.capacityError.textContent = capacityMessage(box, items);
+          els.capacityError.hidden = false;
+        } else {
+          els.capacityError.textContent = "";
+          els.capacityError.hidden = true;
+        }
+      }
+
+      function renderEstimate() {
+        const data = calculate();
+        els.compositionList.innerHTML = "";
+
+        ITEMS.forEach((item) => {
+          const quantity = state.counts[item.key];
+          if (quantity === 0) return;
+
+          const row = document.createElement("li");
+          row.className = "composition-item";
+
+          const name = document.createElement("span");
+          name.className = "composition-name";
+          name.textContent = item.name;
+
+          const count = document.createElement("span");
+          count.className = "composition-quantity";
+          count.textContent = ` × ${quantity}`;
+
+          const sum = document.createElement("span");
+          sum.className = "composition-sum";
+          sum.textContent = formatMoney(quantity * item.price);
+
+          name.appendChild(count);
+          row.append(name, sum);
+          els.compositionList.appendChild(row);
+        });
+
+        els.contentValue.textContent = formatMoney(data.content);
+
+        if (data.discount > 0) {
+          els.discountRow.classList.remove("is-muted");
+          els.discountRow.classList.add("is-discount");
+          els.discountLabel.textContent = "Скидка 10% на содержимое:";
+          els.discountValue.textContent = `−${formatMoney(data.discount)}`;
+        } else {
+          els.discountRow.classList.remove("is-discount");
+          els.discountRow.classList.add("is-muted");
+          els.discountLabel.textContent = "Скидка не применяется";
+          els.discountValue.textContent = "0 ₽";
+        }
+
+        els.packagingValue.textContent = data.box
+          ? `${data.box.display}: ${formatMoney(data.box.price)}`
+          : "—";
+        els.totalValue.textContent = formatMoney(data.total);
+        els.totalHint.textContent = `${data.items} ${itemWord(data.items)} · ${
+          data.discount > 0 ? "скидка 10% применена" : "без скидки"
+        }`;
+        els.downloadStatus.textContent = "";
+      }
+
+      function selectedItemLines() {
+        return ITEMS
+          .filter((item) => state.counts[item.key] > 0)
+          .map((item) => ({
+            item,
+            quantity: state.counts[item.key],
+            sum: state.counts[item.key] * item.price
+          }));
+      }
+
+      function buildTxt() {
+        const data = calculate();
+        const lines = [
+          "Маленький повод — учебная смета",
+          "Состав:"
+        ];
+
+        selectedItemLines().forEach((line) => {
+          lines.push(`${line.item.name} x ${line.quantity} — ${line.sum}`);
+        });
+
+        lines.push(`Предметов: ${data.items}`);
+        lines.push(`Содержимое: ${data.content}`);
+        lines.push(
+          data.discount > 0
+            ? `Скидка 10% на содержимое: -${data.discount}`
+            : "Скидка: не применяется"
+        );
+        lines.push(`Содержимое после скидки: ${data.afterDiscount}`);
+        lines.push(`Упаковка: ${data.box.file} — ${data.box.price}`);
+        lines.push(`Итого: ${data.total}`);
+        lines.push("Цены учебные. Заказ, доставка и оплата не подключены.");
+
+        return `${lines.join("\n")}\n`;
+      }
+
+      function buildCsv() {
+        const data = calculate();
+        const rows = [
+          ["Позиция", "Количество", "Цена", "Сумма"]
+        ];
+
+        selectedItemLines().forEach((line) => {
+          rows.push([line.item.name, String(line.quantity), String(line.item.price), String(line.sum)]);
+        });
+
+        rows.push(["Предметов", String(data.items), "", ""]);
+        rows.push(["Содержимое", "", "", String(data.content)]);
+        rows.push(["Скидка", "", "", String(data.discount > 0 ? -data.discount : 0)]);
+        rows.push(["Упаковка", data.box.file, "", String(data.box.price)]);
+        rows.push(["Итого", "", "", String(data.total)]);
+
+        return `${rows.map((row) => row.join(";")).join("\n")}\n`;
+      }
+
+      function downloadFile(filename, content, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+
+      function resetCalculation() {
+        ITEMS.forEach((item) => {
+          state.counts[item.key] = 0;
+          state.raw[item.key] = "0";
+          state.inputErrors[item.key] = null;
+          els.qtyInputs[item.key].value = "0";
+          syncQuantityUI(item.key);
+        });
+
+        state.box = null;
+        els.downloadStatus.textContent = "";
+        renderItems();
+        showScreen(1);
+      }
+
+      ITEMS.forEach((item) => {
+        const input = els.qtyInputs[item.key];
+
+        input.addEventListener("input", () => {
+          state.raw[item.key] = input.value;
+          const parsed = parseQuantity(input.value);
+
+          if (parsed.error) {
+            state.inputErrors[item.key] = parsed.error;
+          } else {
+            state.inputErrors[item.key] = null;
+            state.counts[item.key] = parsed.value;
+          }
+
+          syncQuantityUI(item.key);
+          renderItems();
+        });
+
+        input.addEventListener("blur", () => {
+          if (!state.inputErrors[item.key]) {
+            input.value = String(state.counts[item.key]);
+            state.raw[item.key] = input.value;
+          }
+        });
+
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" && !els.toPackaging.disabled) {
+            event.preventDefault();
+            goToPackaging();
+          }
+        });
+      });
+
+      $$(".qty-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.key;
+          const delta = button.dataset.action === "increase" ? 1 : -1;
+          const next = Math.max(0, Math.min(MAX_QTY, state.counts[key] + delta));
+
+          state.counts[key] = next;
+          state.raw[key] = String(next);
+          state.inputErrors[key] = null;
+          els.qtyInputs[key].value = String(next);
+          syncQuantityUI(key);
+          renderItems();
+        });
+      });
+
+      $$(".box-card").forEach((card) => {
+        card.addEventListener("click", () => {
+          state.box = card.dataset.box;
+          renderPackaging();
+        });
+      });
+
+      els.toPackaging.addEventListener("click", goToPackaging);
+
+      $("#back-to-items").addEventListener("click", () => {
+        showScreen(1);
+      });
+
+      els.toEstimate.addEventListener("click", () => {
+        const box = state.box ? BOXES[state.box] : null;
+        const items = totalItems();
+        if (!box || items === 0 || items > box.capacity) {
+          renderPackaging();
+          return;
+        }
+        showScreen(3);
+      });
+
+      $("#back-to-packaging").addEventListener("click", () => {
+        showScreen(2);
+      });
+
+      $("#download-txt").addEventListener("click", () => {
+        downloadFile("malenkiy-povod-smeta.txt", buildTxt(), "text/plain;charset=utf-8");
+        els.downloadStatus.textContent = "Файл TXT сформирован";
+      });
+
+      $("#download-csv").addEventListener("click", () => {
+        downloadFile("malenkiy-povod-smeta.csv", buildCsv(), "text/csv;charset=utf-8");
+        els.downloadStatus.textContent = "Файл CSV сформирован";
+      });
+
+      $("#new-calculation").addEventListener("click", resetCalculation);
+
+      ITEMS.forEach((item) => {
+        syncQuantityUI(item.key);
+      });
+      renderItems();
+      els.screens.forEach((screen) => {
+        screen.hidden = Number(screen.dataset.screen) !== 1;
+      });
+      updateStepper(1);
+
+      // ШАГ 6: новая функция — сохранение вариантов
+      const savedEls = {
+        grid: $("#saved-variants-grid"),
+        saveButton: $("#save-variant"),
+        compareButton: $("#compare-variants"),
+        compareGrid: $("#compare-grid"),
+        compareStatus: $("#compare-status"),
+        modal: $("#replace-modal"),
+        toast: $("#variant-toast")
+      };
+
+      let pendingReplacement = null;
+      let lastFocusedBeforeModal = null;
+      let toastTimer = null;
+
+      function itemForm(itemKey, number) {
+        const forms = {
+          candle: ["свеча", "свечи", "свечей"],
+          notebook: ["блокнот", "блокнота", "блокнотов"],
+          card: ["открытка", "открытки", "открыток"]
+        };
+        const form = forms[itemKey];
+        return plural(number, form[0], form[1], form[2]);
+      }
+
+      function variantItemCount(variant) {
+        return ITEMS.reduce((sum, item) => sum + variant[item.key], 0);
+      }
+
+      function variantComposition(variant) {
+        return ITEMS
+          .filter((item) => variant[item.key] > 0)
+          .map((item) => `${variant[item.key]} ${itemForm(item.key, variant[item.key])}`)
+          .join(", ");
+      }
+
+      function variantBoxName(variant) {
+        return variant.box === "large" ? "большая" : "маленькая";
+      }
+
+      function getVariantNumber(variant) {
+        const index = state.savedVariants.findIndex((saved) => saved === variant);
+        return index === -1 ? 1 : index + 1;
+      }
+
+      function buildCurrentVariant() {
+        const data = calculate();
+        return {
+          candle: state.counts.candle,
+          notebook: state.counts.notebook,
+          card: state.counts.card,
+          box: state.box,
+          total: data.total,
+          contents: data.content,
+          discount: data.discount,
+          boxPrice: data.box ? data.box.price : 0
+        };
+      }
+
+      function isCurrentEstimateValid() {
+        if (state.screen !== 3) return false;
+        const box = state.box ? BOXES[state.box] : null;
+        const items = totalItems();
+        return Boolean(box) && items > 0 && items <= box.capacity && !hasInputErrors();
+      }
+
+      function updateVariantControls() {
+        savedEls.saveButton.disabled = !isCurrentEstimateValid();
+        savedEls.compareButton.disabled = !(state.savedVariants[0] && state.savedVariants[1]);
+      }
+
+      function renderSavedVariants() {
+        savedEls.grid.innerHTML = "";
+
+        state.savedVariants.forEach((variant, index) => {
+          const slot = document.createElement("article");
+          slot.className = `saved-slot${variant ? "" : " is-empty"}`;
+          slot.dataset.slot = String(index);
+
+          const top = document.createElement("div");
+          top.className = "saved-slot-top";
+
+          const label = document.createElement("span");
+          label.className = "saved-slot-label";
+          label.textContent = `Вариант ${index + 1}`;
+          top.appendChild(label);
+          slot.appendChild(top);
+
+          if (!variant) {
+            const empty = document.createElement("p");
+            empty.className = "saved-slot-empty";
+            empty.textContent = "Пусто";
+            slot.appendChild(empty);
+            savedEls.grid.appendChild(slot);
+            return;
+          }
+
+          const composition = document.createElement("p");
+          composition.className = "saved-slot-composition";
+          composition.textContent = variantComposition(variant);
+          slot.appendChild(composition);
+
+          const meta = document.createElement("p");
+          meta.className = "saved-slot-meta";
+          meta.appendChild(document.createTextNode(`${variantBoxName(variant)}, `));
+
+          const total = document.createElement("strong");
+          total.textContent = formatMoney(variant.total);
+          meta.appendChild(total);
+          slot.appendChild(meta);
+
+          const actions = document.createElement("div");
+          actions.className = "saved-slot-actions";
+
+          const loadButton = document.createElement("button");
+          loadButton.type = "button";
+          loadButton.className = "btn btn-outline";
+          loadButton.dataset.slotAction = "load";
+          loadButton.dataset.slot = String(index);
+          loadButton.textContent = "Загрузить";
+
+          const deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.className = "btn btn-delete";
+          deleteButton.dataset.slotAction = "delete";
+          deleteButton.dataset.slot = String(index);
+          deleteButton.textContent = "Удалить";
+
+          actions.append(loadButton, deleteButton);
+          slot.appendChild(actions);
+          savedEls.grid.appendChild(slot);
+        });
+
+        updateVariantControls();
+      }
+
+      function showVariantToast(message) {
+        window.clearTimeout(toastTimer);
+        savedEls.toast.textContent = message;
+        savedEls.toast.classList.add("is-visible");
+        toastTimer = window.setTimeout(() => {
+          savedEls.toast.classList.remove("is-visible");
+        }, 3200);
+      }
+
+      function openReplaceModal(variant) {
+        pendingReplacement = variant;
+        lastFocusedBeforeModal = document.activeElement;
+        savedEls.modal.hidden = false;
+        document.body.classList.add("modal-open");
+        const firstButton = savedEls.modal.querySelector('[data-replace-slot="0"]');
+        if (firstButton) firstButton.focus();
+      }
+
+      function closeReplaceModal() {
+        savedEls.modal.hidden = true;
+        document.body.classList.remove("modal-open");
+        pendingReplacement = null;
+
+        if (lastFocusedBeforeModal && typeof lastFocusedBeforeModal.focus === "function") {
+          lastFocusedBeforeModal.focus();
+        }
+        lastFocusedBeforeModal = null;
+      }
+
+      function saveCurrentVariant() {
+        if (!isCurrentEstimateValid()) {
+          updateVariantControls();
+          return;
+        }
+
+        const variant = buildCurrentVariant();
+        const emptySlot = state.savedVariants.findIndex((saved) => saved === null);
+
+        if (emptySlot !== -1) {
+          state.savedVariants[emptySlot] = variant;
+          renderSavedVariants();
+          showVariantToast(`Вариант ${emptySlot + 1} сохранён`);
+          return;
+        }
+
+        openReplaceModal(variant);
+      }
+
+      function replaceSavedVariant(index) {
+        if (!pendingReplacement) return;
+
+        state.savedVariants[index] = pendingReplacement;
+        closeReplaceModal();
+        renderSavedVariants();
+        showVariantToast(`Вариант ${index + 1} сохранён`);
+      }
+
+      function deleteSavedVariant(index) {
+        if (!state.savedVariants[index]) return;
+        state.savedVariants[index] = null;
+        renderSavedVariants();
+        showVariantToast(`Вариант ${index + 1} удалён`);
+      }
+
+      function loadSavedVariant(index) {
+        const variant = state.savedVariants[index];
+        if (!variant) return;
+
+        ITEMS.forEach((item) => {
+          state.counts[item.key] = variant[item.key];
+          state.raw[item.key] = String(variant[item.key]);
+          state.inputErrors[item.key] = null;
+          els.qtyInputs[item.key].value = String(variant[item.key]);
+          syncQuantityUI(item.key);
+        });
+
+        state.box = variant.box;
+        renderItems();
+        showScreen(3);
+        renderSavedVariants();
+        showVariantToast(`Вариант ${index + 1} загружен`);
+      }
+
+      function createCompareRow(label, value, extraClass) {
+        const row = document.createElement("div");
+        row.className = `compare-row${extraClass ? ` ${extraClass}` : ""}`;
+
+        const term = document.createElement("dt");
+        term.textContent = label;
+
+        const description = document.createElement("dd");
+        description.textContent = value;
+
+        row.append(term, description);
+        return row;
+      }
+
+      function createCompareCard(variant, index) {
+        const card = document.createElement("article");
+        card.className = "compare-card";
+
+        const head = document.createElement("div");
+        head.className = "compare-card-head";
+
+        const headCopy = document.createElement("div");
+        const title = document.createElement("h2");
+        title.className = "compare-card-title";
+        title.textContent = `Вариант ${index + 1}`;
+        const note = document.createElement("p");
+        note.className = "compare-card-note";
+        note.textContent = "Сохранённый набор";
+        headCopy.append(title, note);
+
+        const badge = document.createElement("span");
+        badge.className = "compare-variant-badge";
+        badge.textContent = "учебно";
+        head.append(headCopy, badge);
+
+        const compositionTitle = document.createElement("h3");
+        compositionTitle.className = "block-title";
+        compositionTitle.textContent = "Состав";
+
+        const composition = document.createElement("ul");
+        composition.className = "composition-list";
+
+        ITEMS.forEach((item) => {
+          const quantity = variant[item.key];
+          if (quantity === 0) return;
+
+          const row = document.createElement("li");
+          row.className = "composition-item";
+
+          const name = document.createElement("span");
+          name.className = "composition-name";
+          name.textContent = item.name;
+
+          const count = document.createElement("span");
+          count.className = "composition-quantity";
+          count.textContent = ` × ${quantity}`;
+          name.appendChild(count);
+
+          const sum = document.createElement("span");
+          sum.className = "composition-sum";
+          sum.textContent = formatMoney(quantity * item.price);
+
+          row.append(name, sum);
+          composition.appendChild(row);
+        });
+
+        const summary = document.createElement("dl");
+        summary.className = "compare-summary";
+        summary.appendChild(createCompareRow("Содержимое", formatMoney(variant.contents)));
+
+        if (variant.discount > 0) {
+          summary.appendChild(createCompareRow(
+            "Скидка 10% на содержимое:",
+            `−${formatMoney(variant.discount)}`,
+            "is-discount"
+          ));
+        }
+
+        summary.appendChild(createCompareRow(
+          "Упаковка",
+          `${BOXES[variant.box].display}: ${formatMoney(variant.boxPrice)}`
+        ));
+
+        const totalBox = document.createElement("div");
+        totalBox.className = "compare-total";
+        const totalLabel = document.createElement("span");
+        totalLabel.textContent = "Итого";
+        const totalValue = document.createElement("strong");
+        totalValue.textContent = formatMoney(variant.total);
+        totalBox.append(totalLabel, totalValue);
+
+        const loadButton = document.createElement("button");
+        loadButton.type = "button";
+        loadButton.className = "btn btn-outline compare-load";
+        loadButton.dataset.compareLoad = String(index);
+        loadButton.textContent = "Загрузить";
+
+        card.append(head, compositionTitle, composition, summary, totalBox, loadButton);
+        return card;
+      }
+
+      function renderCompare() {
+        savedEls.compareGrid.innerHTML = "";
+        savedEls.compareStatus.textContent = "";
+
+        state.savedVariants.forEach((variant, index) => {
+          if (!variant) return;
+          savedEls.compareGrid.appendChild(createCompareCard(variant, index));
+        });
+      }
+
+      function openCompareScreen() {
+        if (!state.savedVariants[0] || !state.savedVariants[1]) return;
+        renderCompare();
+        showScreen(4);
+      }
+
+      function buildVariantTxt(variant) {
+        const box = BOXES[variant.box];
+        const lines = [
+          "Маленький повод — учебная смета",
+          "Состав:"
+        ];
+
+        ITEMS.forEach((item) => {
+          const quantity = variant[item.key];
+          if (quantity > 0) {
+            lines.push(`${item.name} x ${quantity} — ${quantity * item.price}`);
+          }
+        });
+
+        lines.push(`Предметов: ${variantItemCount(variant)}`);
+        lines.push(`Содержимое: ${variant.contents}`);
+        lines.push(
+          variant.discount > 0
+            ? `Скидка 10% на содержимое: -${variant.discount}`
+            : "Скидка: не применяется"
+        );
+        lines.push(`Содержимое после скидки: ${variant.contents - variant.discount}`);
+        lines.push(`Упаковка: ${box.file} — ${variant.boxPrice}`);
+        lines.push(`Итого: ${variant.total}`);
+        lines.push("Цены учебные. Заказ, доставка и оплата не подключены.");
+
+        return `${lines.join("\n")}\n`;
+      }
+
+      function buildVariantCsv(variant) {
+        const box = BOXES[variant.box];
+        const rows = [
+          ["Позиция", "Количество", "Цена", "Сумма"]
+        ];
+
+        ITEMS.forEach((item) => {
+          const quantity = variant[item.key];
+          if (quantity > 0) {
+            rows.push([
+              item.name,
+              String(quantity),
+              String(item.price),
+              String(quantity * item.price)
+            ]);
+          }
+        });
+
+        rows.push(["Предметов", String(variantItemCount(variant)), "", ""]);
+        rows.push(["Содержимое", "", "", String(variant.contents)]);
+        rows.push(["Скидка", "", "", String(variant.discount > 0 ? -variant.discount : 0)]);
+        rows.push(["Упаковка", box.file, "", String(variant.boxPrice)]);
+        rows.push(["Итого", "", "", String(variant.total)]);
+
+        return `${rows.map((row) => row.join(";")).join("\n")}\n`;
+      }
+
+      function downloadTXT(variant = null, variantNumber = null) {
+        if (variant) {
+          const number = variantNumber || getVariantNumber(variant);
+          const filename = `smeta-variant-${number}.txt`;
+          downloadFile(filename, buildVariantTxt(variant), "text/plain;charset=utf-8");
+          return filename;
+        }
+
+        const box = state.box ? BOXES[state.box] : null;
+        if (!box || totalItems() === 0 || totalItems() > box.capacity) {
+          showVariantToast("Сначала сформируй корректную смету");
+          return null;
+        }
+
+        const filename = "smeta-current.txt";
+        downloadFile(filename, buildTxt(), "text/plain;charset=utf-8");
+        return filename;
+      }
+
+      function downloadCSV(variant = null, variantNumber = null) {
+        if (variant) {
+          const number = variantNumber || getVariantNumber(variant);
+          const filename = `smeta-variant-${number}.csv`;
+          downloadFile(filename, buildVariantCsv(variant), "text/csv;charset=utf-8");
+          return filename;
+        }
+
+        const box = state.box ? BOXES[state.box] : null;
+        if (!box || totalItems() === 0 || totalItems() > box.capacity) {
+          showVariantToast("Сначала сформируй корректную смету");
+          return null;
+        }
+
+        const filename = "smeta-current.csv";
+        downloadFile(filename, buildCsv(), "text/csv;charset=utf-8");
+        return filename;
+      }
+
+      function exportComparedVariant(index, format) {
+        const variant = state.savedVariants[index];
+        if (!variant) return;
+
+        const filename = format === "csv"
+          ? downloadCSV(variant, index + 1)
+          : downloadTXT(variant, index + 1);
+
+        if (filename) {
+          savedEls.compareStatus.textContent = `Файл ${filename} сформирован`;
+        }
+      }
+
+      savedEls.grid.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-slot-action]");
+        if (!button) return;
+
+        const index = Number(button.dataset.slot);
+        if (button.dataset.slotAction === "load") {
+          loadSavedVariant(index);
+        } else if (button.dataset.slotAction === "delete") {
+          deleteSavedVariant(index);
+        }
+      });
+
+      savedEls.saveButton.addEventListener("click", saveCurrentVariant);
+      savedEls.compareButton.addEventListener("click", openCompareScreen);
+
+      savedEls.compareGrid.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-compare-load]");
+        if (!button) return;
+        loadSavedVariant(Number(button.dataset.compareLoad));
+      });
+
+      $("#back-to-estimate").addEventListener("click", () => {
+        showScreen(3);
+        renderSavedVariants();
+      });
+
+      $("#export-variant-1-txt").addEventListener("click", () => {
+        exportComparedVariant(0, "txt");
+      });
+
+      $("#export-variant-1-csv").addEventListener("click", () => {
+        exportComparedVariant(0, "csv");
+      });
+
+      $("#export-variant-2-txt").addEventListener("click", () => {
+        exportComparedVariant(1, "txt");
+      });
+
+      $("#export-variant-2-csv").addEventListener("click", () => {
+        exportComparedVariant(1, "csv");
+      });
+
+      $$("[data-replace-slot]", savedEls.modal).forEach((button) => {
+        button.addEventListener("click", () => {
+          replaceSavedVariant(Number(button.dataset.replaceSlot));
+        });
+      });
+
+      $("#cancel-replace").addEventListener("click", closeReplaceModal);
+
+      savedEls.modal.addEventListener("click", (event) => {
+        if (event.target === savedEls.modal) closeReplaceModal();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !savedEls.modal.hidden) {
+          closeReplaceModal();
+        }
+      });
+
+      // Обновляем доступность новых кнопок после существующих переходов.
+      els.toEstimate.addEventListener("click", () => {
+        renderSavedVariants();
+        updateVariantControls();
+      });
+
+      $("#back-to-packaging").addEventListener("click", updateVariantControls);
+
+      $("#new-calculation").addEventListener("click", () => {
+        renderSavedVariants();
+        updateVariantControls();
+      });
+
+      renderSavedVariants();
+      updateVariantControls();
+
+      // Функции доступны для интеграции и проверки отдельной выгрузки варианта.
+      window.downloadTXT = downloadTXT;
+      window.downloadCSV = downloadCSV;
+    })();
+  </script>
+</body>
+</html>

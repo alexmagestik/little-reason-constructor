@@ -533,10 +533,18 @@
       color: var(--graphite);
     }
 
-    .btn-secondary:hover {
+    .btn-secondary:hover:not(:disabled) {
       border-color: var(--terracotta);
       color: var(--terracotta-ink);
       background: #fff;
+    }
+
+    .btn-secondary:disabled {
+      border-color: var(--line);
+      background: var(--cream-deep);
+      color: #A9968C;
+      box-shadow: none;
+      cursor: not-allowed;
     }
 
     .btn-ghost {
